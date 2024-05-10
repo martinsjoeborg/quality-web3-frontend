@@ -3,6 +3,7 @@ import { useState } from 'react';
 
 import TxnForm from './components/tnxForm/TxnForm';
 import ConnectWallet from './components/connectBtn/ConnectWallet'
+import GetTokens from './components/getTokens/GetTokens';
 
 function App() {
 
@@ -20,7 +21,11 @@ function App() {
             <p>Connect your wallet to send tokens ↓</p>
             <ConnectWallet currentAccount={currentAccount} setCurrentAccount={setCurrentAccount} />
           </div> :
-        <TxnForm  currentAccount={currentAccount} setCurrentAccount={setCurrentAccount} /> }
+        <div>
+            <GetTokens currentAccount={currentAccount} />
+            <TxnForm  currentAccount={currentAccount} setCurrentAccount={setCurrentAccount} />
+        </div>  
+         }
 
       </div>
       

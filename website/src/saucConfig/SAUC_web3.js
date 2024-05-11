@@ -17,13 +17,13 @@ export function sendSAUC(recipient, amount, currentAccount, onError, onSuccess) 
    .on('receipt', receipt => {
        console.log('Transaction Receipt:', receipt);
        if (receipt.status === 1n) {
-        onSuccess && onSuccess("Transaction Successful!"); 
+        onSuccess && onSuccess("Transaction was successful!"); 
     }
     })
    .on('error', error => {
-    console.error(error);
-    const errorMessage = error.message.split('\n')[0];
-    onError && onError(errorMessage); 
+        console.error(error);
+        const errorMessage = error.message.split('\n')[0];
+        onError && onError(errorMessage); 
     });
 };
 

@@ -8,6 +8,7 @@ import GetTokens from './components/getTokens/GetTokens';
 function App() {
 
   const [currentAccount, setCurrentAccount] = useState(null);
+  const [txnState, setTxnState] = useState("Start");
 
   return (
     <div className='container'>
@@ -23,10 +24,10 @@ function App() {
           </div> :
         <div>
             <GetTokens currentAccount={currentAccount} />
-            <TxnForm  currentAccount={currentAccount} setCurrentAccount={setCurrentAccount} />
+            <TxnForm currentAccount={currentAccount} txnState={txnState} setTxnState={setTxnState}  />
         </div>  
          }
-
+        <div>{txnState}</div>
       </div>
       
    </div>

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './TxnForm.css'
 
 import { sendGALF } from '../../galfConfig/GALF_web3';
@@ -6,20 +6,32 @@ import { sendSAUC } from '../../saucConfig/SAUC_web3';
 import { sendGIMI } from '../../gimiConfig/GIMI_web3';
 import Modal from './Modal';
 
-const TxnForm = ({ currentAccount }) => {
+const TxnForm = ({ currentAccount, txnState, setTxnState }) => {
 
     const [recipient, setRecipient] = useState("");
     const [amount, setAmount] = useState("");
     const [token, setToken] = useState("");
 
     const [showModal, setShowModal] = useState(false);
-    const handleClose = () => setShowModal(false);
+
+    const handleClose = () => {
+        setShowModal(false);
+        localStorage.clear();
+    }
     const handleShow = () => setShowModal(true);
 
     const [errorMessage, setErrorMessage] = useState("");
     const [successMessage, setSuccessMessage] = useState("");
 
-    async function handleSend(e) {
+
+    useEffect(() => {
+        const lsTxnState = JSON.parse(localStorage.getItem('Transaction State'));
+        if (lsTxnState !== null) {
+            setShowModal(true)
+        }
+    })
+
+    function handleSend(e) {
         e.preventDefault();
         handleShow();
         setRecipient("");
@@ -27,14 +39,17 @@ const TxnForm = ({ currentAccount }) => {
         setToken("");
         setErrorMessage("");
         setSuccessMessage("");
+        setTxnState("Transaction pending");
 
         if (token === "GALF") {
-            sendGALF(recipient, amount, currentAccount);
+            sendGALF(recipient, amount, currentAccount, (err) => setErrorMessage(err), (msg) => setSuccessMessage(msg), setTxnState, txnState);
         } else if (token === "SAUC") {
             sendSAUC(recipient, amount, currentAccount, (err) => setErrorMessage(err), (msg) => setSuccessMessage(msg));
         } else if (token === "GIMI") {
-            sendGIMI(recipient, amount, currentAccount, setErrorMessage);
+            sendGIMI(recipient, amount, currentAccount, (err) => setErrorMessage(err), (msg) => setSuccessMessage(msg));
         }
+
+        localStorage.setItem('Transaction State', JSON.stringify("Transaction pending"));
     }
 
     return ( 
@@ -58,7 +73,7 @@ const TxnForm = ({ currentAccount }) => {
                     <button className='button'>Send</button>
                 </form>
 
-                <Modal show={showModal} handleClose={handleClose} errorMessage={errorMessage} successMessage={successMessage} />
+                <Modal txnState={txnState} show={showModal} handleClose={handleClose} errorMessage={errorMessage} successMessage={successMessage} />
                     
                 
             </div>
